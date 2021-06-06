@@ -1,0 +1,79 @@
+---
+  title: "Bikeshare"
+output: 
+  flexdashboard::flex_dashboard:
+  orientation: columns
+vertical_layout: fill
+---
+  
+  ```{r setup, include=FALSE}
+#setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+library(flexdashboard)
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+```
+
+
+```{r}
+trips_df <- read.csv("D:/Maestria_Estadistica_PUCP/III-ciclo/Minería de datos/sanfran_bikeshare_joined_oneday.csv")
+```
+
+Introducción
+===================================================================
+  
+  Column {data-width=650}
+-----------------------------------------------------------------------
+  
+  ### Chart A
+  
+  ```{r}
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+  
+  ### Chart B
+  
+  ```{r}
+trips_df %>% 
+  mutate(Hour=hour(start_date)) %>% 
+  group_by(Hour) %>% 
+  dplyr::summarize(TripsStarted = n()) %>% 
+  ggplot(aes(x = Hour, y = TripsStarted)) + 
+  theme_bw() + 
+  geom_bar(stat='identity')
+```
+
+### Chart C
+
+```{r}
+trips_df %>% 
+  mutate(Hour=hour(end_date)) %>% 
+  group_by(Hour) %>% 
+  dplyr::summarize(TripsEnded = n()) %>% 
+  ggplot(aes(x = Hour, y = TripsEnded)) + 
+  theme_bw() + 
+  geom_bar(stat='identity')
+```
+
+Detalles 1 {data-navmenu="Info"}
+===================================================================
+  
+  ### Chart D
+  
+  ```{r}
+
+```
+
+
+Detalles 2 {data-navmenu="Info"}
+===================================================================
+  
+  ### Chart E
+  
+  ```{r}
+
+```
