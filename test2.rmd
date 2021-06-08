@@ -1,70 +1,87 @@
 ---
-  title: "Bikeshare"
+title: "Registro Nacional de Denuncias de Delitos y Faltas 2017"
 output: 
   flexdashboard::flex_dashboard:
-  orientation: columns
-vertical_layout: fill
+    orientation: columns
+    vertical_layout: fill
+runtime: shiny
 ---
   
-  ```{r setup, include=FALSE}
-#setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```{r setup, include=FALSE}
 library(flexdashboard)
 library(readr)
 library(ggplot2)
 library(dplyr)
 library(lubridate)
+library(haven)
 ```
 
 
 ```{r}
-trips_df <- read.csv("D:/Maestria_Estadistica_PUCP/III-ciclo/Minería de datos/sanfran_bikeshare_joined_oneday.csv")
+#Cargamos la base de datos
+cap100<-read_sav("D:/BD_varias/RENADEF 2017/Capítulo_100_Denuncia_de_Delitos_2017.SAV")
+cap200<-read_sav("D:/BD_varias/RENADEF 2017/Capítulo_200_Denuncia_de_Delitos_2017.SAV")
+cap300<-read_sav("D:/BD_varias/RENADEF 2017/Capítulo_300_Denuncia_de_Delitos_2017.SAV")
+
+#Realizamos el merge de los tres módulos
+crimen<-merge(cap200,cap300,by = intersect(names(cap200), names(cap300)))
+names(crimen)[4]<-"UBIGEO"
+crimen1<-merge(cap100,crimen,by="UBIGEO")
+
 ```
 
 Introducción
 ===================================================================
+
   
-  Column {data-width=650}
+Column {.sidebar data-width=400}
 -----------------------------------------------------------------------
   
-  ### Chart A
+### Chart A
   
-  ```{r}
+```{r}
 
 ```
 
 Column {data-width=350}
 -----------------------------------------------------------------------
   
-  ### Chart B
+### Chart B
   
-  ```{r}
-trips_df %>% 
-  mutate(Hour=hour(start_date)) %>% 
-  group_by(Hour) %>% 
-  dplyr::summarize(TripsStarted = n()) %>% 
-  ggplot(aes(x = Hour, y = TripsStarted)) + 
-  theme_bw() + 
-  geom_bar(stat='identity')
+```{r}
+departamentos<-unique(crimen1[c("NOMBREDD.y")])
+selectInput("Departamento", label = "Departamento:",
+          choices =departamentos,selected = "Amazonas")
+#zone.choices = reactive({
+ # if (input$Zone=="All"){
+#  "crimen1"
+ # }else{
+#  crimen1 %>%
+ # filter(NOMBREDD.y==input$Zone)}
+#})
+
+provincias<-unique(crimen1[c("NOMBREPP.y")])
+selectInput("Provincia", label = "Provincia:",
+          choices =provincias,selected = "CHACHAPOYAS")
+
+distritos<-unique(crimen1[c("NOMBREDI.y")])
+selectInput("Distrito", label = "Distrito:",
+          choices =provincias,selected = "CHACHAPOYAS")
+
 ```
 
 ### Chart C
 
 ```{r}
-trips_df %>% 
-  mutate(Hour=hour(end_date)) %>% 
-  group_by(Hour) %>% 
-  dplyr::summarize(TripsEnded = n()) %>% 
-  ggplot(aes(x = Hour, y = TripsEnded)) + 
-  theme_bw() + 
-  geom_bar(stat='identity')
+
 ```
 
 Detalles 1 {data-navmenu="Info"}
 ===================================================================
   
-  ### Chart D
+### Chart D
   
-  ```{r}
+```{r}
 
 ```
 
@@ -72,8 +89,8 @@ Detalles 1 {data-navmenu="Info"}
 Detalles 2 {data-navmenu="Info"}
 ===================================================================
   
-  ### Chart E
+### Chart E
   
-  ```{r}
+```{r}
 
 ```
