@@ -1,3 +1,0 @@
-100.sav filter=lfs diff=lfs merge=lfs -text
-200.sav filter=lfs diff=lfs merge=lfs -text
-300.sav filter=lfs diff=lfs merge=lfs -text
