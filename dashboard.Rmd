@@ -19,9 +19,9 @@ library(haven)
 
 ```{r}
 #Cargamos la base de datos desde el repositorio
-cap100<-read_sav(file ="https://github.com/eduardoharo13/restepo/raw/master/100.sav")
-cap200<-read_sav(file ="https://github.com/eduardoharo13/restepo/raw/master/200.sav")
-cap300<-read_sav(file ="https://github.com/eduardoharo13/restepo/raw/master/300.sav")
+cap100<-read_sav("D:/BD_varias/RENADEF 2017/100.sav")
+cap200<-read_sav("D:/BD_varias/RENADEF 2017/200.sav")
+cap300<-read_sav("D:/BD_varias/RENADEF 2017/300.sav")
 
 #Realizamos el merge de los tres módulos
 crimen<-merge(cap200,cap300,by = intersect(names(cap200), names(cap300)))
