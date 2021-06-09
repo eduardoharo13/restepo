@@ -1,0 +1,88 @@
+---
+title: "Registro Nacional de Denuncias de Delitos y Faltas 2017"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+runtime: shiny
+---
+  
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(haven)
+```
+
+
+```{r}
+#Cargamos la base de datos desde el repositorio
+cap100<-read_sav(file ="https://github.com/eduardoharo13/restepo/raw/master/100.sav")
+cap200<-read_sav(file ="https://github.com/eduardoharo13/restepo/raw/master/200.sav")
+cap300<-read_sav(file ="https://github.com/eduardoharo13/restepo/raw/master/300.sav")
+
+#Realizamos el merge de los tres módulos
+crimen<-merge(cap200,cap300,by = intersect(names(cap200), names(cap300)))
+names(crimen)[4]<-"UBIGEO"
+crimen1<-merge(cap100,crimen,by="UBIGEO")
+
+```
+
+Introducción
+===================================================================
+
+  
+Column {.sidebar data-width=400}
+-----------------------------------------------------------------------
+  
+### Chart A
+  
+```{r}
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+  
+### Chart B
+  
+```{r}
+departamentos<-unique(crimen1[c("NOMBREDD.y")])
+selectInput("Departamento", label = "Departamento:",
+          choices =departamentos,selected = "Amazonas")
+provincias<-unique(crimen1[c("NOMBREPP.y")])
+selectInput("Provincia", label = "Provincia:",
+          choices =provincias,selected = "CHACHAPOYAS")
+
+distritos<-unique(crimen1[c("NOMBREDI.y")])
+selectInput("Distrito", label = "Distrito:",
+          choices =provincias,selected = "CHACHAPOYAS")
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
+Detalles 1 {data-navmenu="Info"}
+===================================================================
+  
+### Chart D
+  
+```{r}
+
+```
+
+
+Detalles 2 {data-navmenu="Info"}
+===================================================================
+  
+### Chart E
+  
+```{r}
+
+```
