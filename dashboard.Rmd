@@ -49,16 +49,20 @@ Column {data-width=350}
 ### Chart B
   
 ```{r}
-departamentos<-unique(crimen1[c("NOMBREDD.y")])
-selectInput("Departamento", label = "Departamento:",
-          choices =departamentos,selected = "Amazonas")
-provincias<-unique(crimen1[c("NOMBREPP.y")])
-selectInput("Provincia", label = "Provincia:",
-          choices =provincias,selected = "CHACHAPOYAS")
+  selectizeInput("Departamento", label = "Departamento:",
+          choices =unique(crimen1[c("NOMBREDD.y")]),selected = "Amazonas")
 
-distritos<-unique(crimen1[c("NOMBREDI.y")])
-selectInput("Distrito", label = "Distrito:",
-          choices =provincias,selected = "CHACHAPOYAS")
+  selectizeInput("Provincia", label = "Provincia:",
+          choices=NULL,options = list(maxOptions = 1000000))
+  
+ selectizeInput("Distrito", label = "Distrito:",
+          choices=NULL,options = list(maxOptions = 1000000))
+
+observeEvent(input$Departamento,
+      updateSelectizeInput(session,"Provincia","Provincia",choices=crimen1$NOMBREPP.y[crimen1$NOMBREDD.y==input$Departamento], server = TRUE))
+
+observeEvent(input$Provincia,
+      updateSelectizeInput(session,"Distrito","Distrito",choices=crimen1$NOMBREDI.y[crimen1$NOMBREPP.y==input$Provincia & crimen1$NOMBREDD.y==input$Departamento], server = TRUE))
 
 ```
 
