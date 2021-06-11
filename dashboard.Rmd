@@ -8,6 +8,7 @@ runtime: shiny
 ---
   
 ```{r setup, include=FALSE}
+library(curl)
 library(flexdashboard)
 library(readr)
 library(raster)
@@ -34,14 +35,21 @@ library(rgeos)
 
 ```{r, results='hide'}
 #Cargamos la base de datos desde el repositorio
-cap100<-read_sav("D:/BD_varias/RENADEF 2017/100.sav")
-cap200<-read_sav("D:/BD_varias/RENADEF 2017/200.sav")
-cap300<-read_sav("D:/BD_varias/RENADEF 2017/300.sav")
+#Módulo 100
+id<- "1lQ8L-mRVcR8nuiOwyaD25aCnod12GiB6"
+sURL <- sprintf("https://drive.google.com/uc?id=%s&export=download",id)
+con <- curl(sURL)
+cap100<-read_sav(con)
 
-#Realizamos el merge de los tres módulos
-#crimen<-merge(cap200,cap300,by = intersect(names(cap200), names(cap300)))
-#names(crimen)[4]<-"UBIGEO"
-#crimen1<-merge(cap100,crimen,by="UBIGEO")
+#Módulo 200
+cap200<-read_sav("D:/BD_varias/RENADEF 2017/200.sav")
+
+#Módulo 300
+id3<-"1Xivtt_zhexJZZmel1shb1K3DgW2g7xTk"
+sURL3 <- sprintf("https://drive.google.com/uc?id=%s&export=download", id3)
+con3 <- curl(sURL3)
+cap300<-read_sav(con3)
+
 
 # Provincias:
 peru_prov<- readOGR("D:/GADM/gadm36_PER_2.shp")
