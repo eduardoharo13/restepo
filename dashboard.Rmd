@@ -65,22 +65,21 @@ Introducción
 Column {.sidebar data-width=400}
 -----------------------------------------------------------------------
   
-### Número de denuncias de faltas por provincia
+### Número de denuncias por provincia
 
 ```{r, message = FALSE, echo = FALSE}
 
+qpal <- colorQuantile("Blues",cap100$FALTAS,n=9)
 
-pal <- colorFactor(
-  palette = "Paired",
-  domain = peru_prov@data$NAME_1)
 
 leaflet(peru_prov) %>%
   addTiles() %>%
   addPolygons(weight = 1,
-              stroke = TRUE,
-              color = "white",
-              fillColor = ~pal(NAME_1),
-              fillOpacity = 0.7,
+              stroke = T,
+              color = ~qpal(cap100$FALTAS),
+              #fillColor = ~qpal(NAME_2),
+              fillOpacity = 1,
+              smoothFactor = 0.2,
               dashArray = "3",
               label = ~NAME_2,
               popup = ~paste("<b>Provincia:</b>", NAME_2,
