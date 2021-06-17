@@ -2,7 +2,7 @@
 title: "Registro Nacional de Denuncias de Delitos y Faltas 2017"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: rows
     vertical_layout: fill
 runtime: shiny
 ---
@@ -106,19 +106,17 @@ leaflet(peru_prov) %>%
 
 ```
 
-Column {data-width=350}
------------------------------------------------------------------------
-  
-### Chart B
-  
+Row {data-height=550}
+-------------------------------------
+### Chart 2
 ```{r}
 selectizeInput("Departamento", label = "Departamento:",
           choices =unique(cap200[c("NOMBREDD")]),selected = "Amazonas")
 
 selectizeInput("Provincia", label = "Provincia:",
           choices=NULL,options = list(maxOptions = 2000000))
-  
- selectizeInput("Distrito", label = "Distrito:",
+
+selectizeInput("Distrito", label = "Distrito:",
           choices=NULL,options = list(maxOptions = 2000000))
 
 observeEvent(input$Departamento,
@@ -126,8 +124,64 @@ observeEvent(input$Departamento,
 
 observeEvent(input$Provincia,
       updateSelectizeInput(session,"Distrito","Distrito",choices=cap200$NOMBREDI[cap200$NOMBREPP==input$Provincia & cap200$NOMBREDD==input$Departamento], server = TRUE))
+```
+
+### Chart 3
+```{r}
+```   
+
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+  
+### Delitos por Distrito
+  
+
+
+```{r}
+a <- reactive({as.data.frame(sort(table(cap200[which(cap200$NOMBREDI==input$Distrito),]$IH208_GENERICO),decreasing = T))})
+
+theme_set(theme_classic())
+# Plot
+
+ #renderTable({
+   # a()    
+  #})
+
+  
+renderPlot({
+  ggplot(as.data.frame(a()), aes(x=Var1, y=Freq)) +
+  geom_point(col="tomato2", size=3) +   # Draw points
+  geom_text(label=a()$Freq, check_overlap = T,nudge_x = 0.30)+
+  geom_segment(aes(x=Var1,
+                   xend=Var1,
+                   y=min(Freq),
+                   yend=max(Freq)),
+               linetype="dashed",
+               size=0.1) +   # Draw dashed lines
+  labs(title="Delitos Cometidos en el Distrito") +
+  coord_flip() +labs(x= "Delitos", y = "Cantiad de Denuncias")
+})
+
+# renderPlot({
+#   ggplot(a,aes(x=Var1, y=Freq)) +
+#   geom_point(col="tomato2", size=3) +   # Draw points
+#   geom_text(label=a$Freq, check_overlap = T,nudge_x = 0.30)+
+#   geom_segment(aes(x=Var1,
+#                    xend=Var1,
+#                    y=min(Freq),
+#                    yend=max(Freq)),
+#                linetype="dashed",
+#                size=0.1) +   # Draw dashed lines
+#   labs(title="Delitos Cometidos en el Distrito") +
+#   coord_flip() +labs(x= "Delitos", y = "Cantiad de Denuncias")
+# },width = 20)
+
 
 ```
+
+
+
 
 
 Detalles 1 {data-navmenu="Info"}
