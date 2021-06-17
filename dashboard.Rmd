@@ -128,6 +128,21 @@ observeEvent(input$Provincia,
 
 ### Chart 3
 ```{r}
+
+b <- reactive({as.data.frame(sort(table(cap200[which(cap200$NOMBREDI==input$Distrito),]$IH203_MES,cap200[which(cap200$NOMBREDI==input$Distrito),]$IH208_GENERICO ),decreasing = T))})
+
+ renderPlot({ ggplot(as.data.frame(b()), aes(x=Var1,y = Freq,group = Var2 ))+
+  geom_line(aes(color = Var2))+
+  geom_point(aes(color = Var2), size=2, shape=21, fill="white")+
+  geom_label(aes(label=b()$Freq),size = 3, fill = "white")+
+  xlab("Mes") +   
+  ylab("Cantidad de denuncias reportadas") + 
+  ggtitle("DENUNCIAS REPORTADAS EN EL AÑO 2017")+
+  theme(legend.position = "bottom")+
+  scale_x_discrete(labels = c("ENERO", "FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SETIEMBRE",
+                              "OCTUBRE","NOVIEMBRE","DICIEMBRE"))
+ })
+
 ```   
 
 
