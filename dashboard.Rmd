@@ -61,8 +61,7 @@ peru_distr <- readOGR("~/restepo/GADM/gadm36_PER_3.shp")
 
 Introducción
 ===================================================================
-  
-  
+
 Column {.sidebar data-width=350}
 -----------------------------------------------------------------------
   
@@ -151,8 +150,8 @@ b <- reactive({as.data.frame(table(cap200[which(cap200$NOMBREDI==input$Distrito)
   xlab("Mes") +   
   ylab("Cantidad de denuncias reportadas") + 
   theme(legend.position = "bottom")+
-  scale_x_discrete(labels = c("ENERO", "FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SETIEMBRE",
-                              "OCTUBRE","NOVIEMBRE","DICIEMBRE"))
+  scale_x_discrete(labels = c("ENE", "FEB","MAR","ABR","MAY","JUN","JUL","AGO","SET",
+                              "OCT","NOV","DIC", "S/F"))
  })
 
 ```   
@@ -181,24 +180,3 @@ renderPlot({
 ```
 
 
-
-
-
-Detalles 1 {data-navmenu="Info"}
-===================================================================
-  
-### Chart D
-  
-```{r}
-
-```
-
-
-Detalles 2 {data-navmenu="Info"}
-===================================================================
-  
-### Chart E
-  
-```{r}
-
-```
