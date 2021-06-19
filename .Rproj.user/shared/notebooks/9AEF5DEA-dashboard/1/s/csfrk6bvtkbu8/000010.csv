@@ -1,0 +1,5 @@
+"0","# Provincias:
+peru_prov<- readOGR(""~\Documents\GitHub\restepo\GADM\gadm36_PER_2.shp"")
+"
+"2","Error: '\D' is an unrecognized escape in character string starting """"~\D""
+"
