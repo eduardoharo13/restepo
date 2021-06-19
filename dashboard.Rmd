@@ -1,13 +1,14 @@
 ---
-  title: "Registro Nacional de Denuncias de Delitos y Faltas 2017"
+title: "Registro Nacional de Denuncias de Delitos y Faltas 2017"
 output: 
   flexdashboard::flex_dashboard:
-  orientation: rows
-vertical_layout: fill
+    orientation: columns
+    vertical_layout: fill
 runtime: shiny
 ---
   
 ```{r setup, include=FALSE}
+library(foreign)
 library(curl)
 library(flexdashboard)
 library(readr)
@@ -42,7 +43,7 @@ con <- curl(sURL)
 cap100<-read_sav(con)
 
 #Módulo 200
-cap200<-read_sav("D:/BD_varias/RENADEF 2017/200.sav")
+cap200<-read.spss("~/Dropbox/Maestría Estadística/III Semestre/Minería de datos/Bases de datos/Capítulo_200_Denuncia_de_Delitos_2017.sav",to.data.frame=T)
 
 #Módulo 300
 id3<-"1Xivtt_zhexJZZmel1shb1K3DgW2g7xTk"
@@ -52,9 +53,9 @@ cap300<-read_sav(con3)
 
 
 # Provincias:
-peru_prov<- readOGR("~\Documents\GitHub\restepo\GADM\gadm36_PER_2.shp")
+peru_prov<- readOGR("~/restepo/GADM/gadm36_PER_2.shp")
 # Distritos:
-peru_distr <- readOGR("D:/GADM/gadm36_PER_3.shp")
+peru_distr <- readOGR("~/restepo/GADM/gadm36_PER_3.shp")
 
 ```
 
@@ -62,10 +63,10 @@ Introducción
 ===================================================================
   
   
-  Column {.sidebar data-width=400}
+Column {.sidebar data-width=350}
 -----------------------------------------------------------------------
   
-  ### Número de denuncias por provincia
+### Número de denuncias por provincia
   
 ```{r, message = FALSE, echo = FALSE}
 
@@ -101,14 +102,24 @@ leaflet(peru_prov) %>%
                 dashArray = "",
                 color = "grey",
                 bringToFront = TRUE
-              ))
+              )) %>%
+  addLegend("bottomleft", pal = qpal, values = ~cap100$FALTAS,
+    title = "Número de delitos",
+    labFormat =  function(type, cuts, p) {
+      n = length(cuts) 	
+      cuts[n] = "mas" 
+      for (i in 2:(n-1)){cuts[i] = ""} 	
+      cuts[1] = "menos" 
+      paste0(cuts[-n], cuts[-1])},
+    opacity = 1
+  )
 
 
 ```
 
-Row {data-height=550}
--------------------------------------
-  ### Chart 2
+Column {data-width=300}
+-----------------------------------------------------------------------
+### Seleccionar Ubicación
 ```{r}
 selectizeInput("Departamento", label = "Departamento:",
                choices =unique(cap200[c("NOMBREDD")]),selected = "Amazonas")
@@ -126,6 +137,8 @@ observeEvent(input$Provincia,
              updateSelectizeInput(session,"Distrito","Distrito",choices=cap200$NOMBREDI[cap200$NOMBREPP==input$Provincia & cap200$NOMBREDD==input$Departamento], server = TRUE))
 ```
 
+Column {data-width=500}
+-----------------------------------------------------------------------
 ### Denuncias reportadas en el año 2017
 ```{r}
 
@@ -143,14 +156,9 @@ b <- reactive({as.data.frame(table(cap200[which(cap200$NOMBREDI==input$Distrito)
  })
 
 ```   
+  
+### Delitos por Distrito
 
-
-Row {data-height=650}
------------------------------------------------------------------------
-  
-  ### Delitos por Distrito
-  
-  
 ```{r}
 a <- reactive({as.data.frame(sort(table(cap200[which(cap200$NOMBREDI==input$Distrito),]$IH208_GENERICO),decreasing = T))})
 
@@ -179,7 +187,7 @@ renderPlot({
 Detalles 1 {data-navmenu="Info"}
 ===================================================================
   
-  ### Chart D
+### Chart D
   
 ```{r}
 
@@ -189,7 +197,7 @@ Detalles 1 {data-navmenu="Info"}
 Detalles 2 {data-navmenu="Info"}
 ===================================================================
   
-  ### Chart E
+### Chart E
   
 ```{r}
 
