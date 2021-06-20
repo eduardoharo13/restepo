@@ -149,7 +149,7 @@ renderValueBox({
 renderValueBox({         
           filtered <- 
   cap200 %>%    
-  filter(NOMBREDD == input$Departamento,              
+  filter(            
          NOMBREPP == input$Provincia     
 
         )          
@@ -164,8 +164,7 @@ renderValueBox({
 renderValueBox({         
           filtered <- 
   cap200 %>%    
-  filter(NOMBREDD == input$Departamento,              
-         NOMBREPP == input$Provincia,      
+  filter(     
          NOMBREDI == input$Distrito
         )          
       valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Denuncias de delitos por distrito", icon ="fa-balance-scale", color = "purple")   
