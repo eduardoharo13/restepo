@@ -6,7 +6,8 @@ output:
     vertical_layout: fill
 runtime: shiny
 ---
-  
+
+
 ```{r setup, include=FALSE}
 library(foreign)
 library(curl)
@@ -65,13 +66,13 @@ peru_distr <- readOGR("~/restepo/GADM/gadm36_PER_3.shp")
 
 ```
 
-Introducción
+Dashboard
 ===================================================================
 
 Column {.sidebar data-width=350}
 -----------------------------------------------------------------------
   
-### Número de denuncias por provincia
+### Número de denuncias de faltas por provincia
   
 ```{r, message = FALSE, echo = FALSE}
 
@@ -136,7 +137,7 @@ renderValueBox({
   filter(NOMBREDD == input$Departamento,              
 
         )          
-      valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Delitos totales por departamento", icon = "fa-balance-scale", color = "navy")   
+      valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Denuncias de delitos por departamento", icon = "fa-balance-scale", color = "navy")   
     })
 
 
@@ -152,7 +153,7 @@ renderValueBox({
          NOMBREPP == input$Provincia     
 
         )          
-      valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Delitos totales por provincia", icon = "fa-balance-scale", color = "blue")   
+      valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Denuncias de delitos por provincia", icon = "fa-balance-scale", color = "blue")   
     })
 
 
@@ -167,7 +168,7 @@ renderValueBox({
          NOMBREPP == input$Provincia,      
          NOMBREDI == input$Distrito
         )          
-      valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Delitos totales por distrito", icon ="fa-balance-scale", color = "purple")   
+      valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Denuncias de delitos por distrito", icon ="fa-balance-scale", color = "purple")   
     })
 
 
@@ -197,7 +198,7 @@ observeEvent(input$Provincia,
 
 Column {data-width=500}
 -----------------------------------------------------------------------
-### Evolución de tipos de delitos reportados por distrito
+### Evolución de tipos de denuncias de delitos por distrito
 ```{r}
 
 b <- reactive({as.data.frame(table(cap200[which(cap200$NOMBREDI==input$Distrito),]$IH203_MES,cap200[which(cap200$NOMBREDI==input$Distrito),]$IH208_GENERICO ))})
@@ -207,14 +208,14 @@ b <- reactive({as.data.frame(table(cap200[which(cap200$NOMBREDI==input$Distrito)
   geom_label(aes(label=b()$Freq),size = 3)+
   xlab("Mes") +   
   ylab("Cantidad de denuncias reportadas") + 
-  theme(legend.position = "bottom",legend.text = element_text(size = 4))+
+  theme(legend.position = "bottom",legend.text = element_text(size = 5))+
   scale_x_discrete(labels = c("ENE", "FEB","MAR","ABR","MAY","JUN","JUL","AGO","SET",
                               "OCT","NOV","DIC", "S/F"))
  })
 
 ```   
   
-### Tipos de delitos reportados por distrito
+### Tipos de denuncias de delitos  por distrito
 
 ```{r}
 a <- reactive({as.data.frame(sort(table(cap200[which(cap200$NOMBREDI==input$Distrito),]$IH208_GENERICO),decreasing = T))})
