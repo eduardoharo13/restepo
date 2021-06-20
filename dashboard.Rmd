@@ -116,7 +116,7 @@ leaflet(peru_prov) %>%
 
 ```
 
-Column {data-width=300}
+Column {data-width=300, data-height=600}
 -----------------------------------------------------------------------
 ### Seleccionar Ubicación
 ```{r}
@@ -135,6 +135,13 @@ observeEvent(input$Departamento,
 observeEvent(input$Provincia,
              updateSelectizeInput(session,"Distrito","Distrito",choices=cap200$NOMBREDI[cap200$NOMBREPP==input$Provincia & cap200$NOMBREDD==input$Departamento], server = TRUE))
 ```
+
+### Value box 1
+
+```{r}
+valueBox(nrow(cap200), caption = "Denuncias totales",icon="fa-balance-scale-left",col="info")
+```
+
 
 Column {data-width=500}
 -----------------------------------------------------------------------
