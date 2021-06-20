@@ -94,13 +94,13 @@ leaflet(peru_prov) %>%
                              "<br/>",
                              "<b>Total de denuncias:</b>",cap100$FALTAS,
                              "<br/>",
-                             "<b>Denuncias contra la persona:</b>",cap100$FALTAS_A,
+                             "<b>Faltas contra la persona:</b>",cap100$FALTAS_A,
                              "<br/>",
-                             "<b>Denuncias contra el patrimonio:</b>",cap100$FALTAS_B,
+                             "<b>Faltas contra el patrimonio:</b>",cap100$FALTAS_B,
                              "<br/>",
-                             "<b>Denuncias contra las buenas costumbres:</b>",cap100$FALTAS_C,
+                             "<b>Faltas contra las buenas costumbres:</b>",cap100$FALTAS_C,
                              "<br/>",
-                             "<b>Denuncias contra la seguridad pública:</b>",cap100$FALTAS_D
+                             "<b>Faltas contra la seguridad pública:</b>",cap100$FALTAS_D
               ),
               highlight = highlightOptions(
                 weight = 2,
