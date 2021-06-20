@@ -33,6 +33,12 @@ library(ggpubr)
 library(rgeos)
 ```
 
+```{css}
+.value-box {
+  height: 85px;
+}
+
+```
 
 ```{r, results='hide'}
 #Cargamos la base de datos desde el repositorio
@@ -43,7 +49,7 @@ con <- curl(sURL)
 cap100<-read_sav(con)
 
 #Módulo 200
-cap200<-read.spss("~/Dropbox/Maestría Estadística/III Semestre/Minería de datos/Bases de datos/Capítulo_200_Denuncia_de_Delitos_2017.sav",to.data.frame=T)
+cap200<-read.spss("D:/BD_varias/RENADEF 2017/200.sav",to.data.frame=T)
 
 #Módulo 300
 id3<-"1Xivtt_zhexJZZmel1shb1K3DgW2g7xTk"
@@ -103,7 +109,7 @@ leaflet(peru_prov) %>%
                 bringToFront = TRUE
               )) %>%
   addLegend("bottomleft", pal = qpal, values = ~cap100$FALTAS,
-    title = "Número de delitos",
+    title = "Número de denuncias",
     labFormat =  function(type, cuts, p) {
       n = length(cuts) 	
       cuts[n] = "mas" 
@@ -118,7 +124,57 @@ leaflet(peru_prov) %>%
 
 Column {data-width=300, data-height=600}
 -----------------------------------------------------------------------
-### Seleccionar Ubicación
+
+### Value box 1
+
+```{r}
+
+
+renderValueBox({         
+          filtered <- 
+  cap200 %>%    
+  filter(NOMBREDD == input$Departamento,              
+
+        )          
+      valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Delitos totales por departamento", icon = "fa-balance-scale", color = "navy")   
+    })
+
+
+```
+
+
+### Value box 2
+```{r}
+renderValueBox({         
+          filtered <- 
+  cap200 %>%    
+  filter(NOMBREDD == input$Departamento,              
+         NOMBREPP == input$Provincia     
+
+        )          
+      valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Delitos totales por provincia", icon = "fa-balance-scale", color = "blue")   
+    })
+
+
+```
+
+### Value box 3
+```{r}
+renderValueBox({         
+          filtered <- 
+  cap200 %>%    
+  filter(NOMBREDD == input$Departamento,              
+         NOMBREPP == input$Provincia,      
+         NOMBREDI == input$Distrito
+        )          
+      valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Delitos totales por distrito", icon ="fa-balance-scale", color = "purple")   
+    })
+
+
+```
+
+
+### Seleccione el distrito
 ```{r}
 selectizeInput("Departamento", label = "Departamento:",
                choices =unique(cap200[c("NOMBREDD")]),selected = "Amazonas")
@@ -136,29 +192,15 @@ observeEvent(input$Provincia,
              updateSelectizeInput(session,"Distrito","Distrito",choices=cap200$NOMBREDI[cap200$NOMBREPP==input$Provincia & cap200$NOMBREDD==input$Departamento], server = TRUE))
 ```
 
-### Value box 1
 
-```{r}
-# c <- reactive({as.numeric(sum(table(cap200$IH208_GENERICO)))})
-# renderValueBox(c(), caption = "Denuncias totales")
-valueBox(nrow(cap200), caption = "Denuncias totales",icon="fa-tag",col="primary")
-```
-
-### Value box 2
-```{r}
-# c <- reactive({as.numeric(sum(table(cap200$IH208_GENERICO)))})
-# renderValueBox(c(), caption = "Denuncias totales")
-valueBox(nrow(cap100), caption = "Faltas totales",icon="fa-tag",col="success")
-```
 
 
 Column {data-width=500}
 -----------------------------------------------------------------------
-### Denuncias reportadas en el año 2017
+### Evolución de tipos de delitos reportados por distrito
 ```{r}
 
 b <- reactive({as.data.frame(table(cap200[which(cap200$NOMBREDI==input$Distrito),]$IH203_MES,cap200[which(cap200$NOMBREDI==input$Distrito),]$IH208_GENERICO ))})
-
  renderPlot({ ggplot(as.data.frame(b()), aes(x=Var1,y = Freq,group = Var2 ))+
   geom_line(aes(color = Var2))+
   geom_point(aes(color = Var2), size=2, shape=21, fill="white")+
@@ -172,7 +214,7 @@ b <- reactive({as.data.frame(table(cap200[which(cap200$NOMBREDI==input$Distrito)
 
 ```   
   
-### Delitos por Distrito
+### Tipos de delitos reportados por distrito
 
 ```{r}
 a <- reactive({as.data.frame(sort(table(cap200[which(cap200$NOMBREDI==input$Distrito),]$IH208_GENERICO),decreasing = T))})
@@ -194,5 +236,3 @@ renderPlot({
 })
 
 ```
-
-
