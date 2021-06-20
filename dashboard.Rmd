@@ -139,7 +139,16 @@ observeEvent(input$Provincia,
 ### Value box 1
 
 ```{r}
-valueBox(nrow(cap200), caption = "Denuncias totales",icon="fa-balance-scale-left",col="info")
+# c <- reactive({as.numeric(sum(table(cap200$IH208_GENERICO)))})
+# renderValueBox(c(), caption = "Denuncias totales")
+valueBox(nrow(cap200), caption = "Denuncias totales",icon="fa-tag",col="primary")
+```
+
+### Value box 2
+```{r}
+# c <- reactive({as.numeric(sum(table(cap200$IH208_GENERICO)))})
+# renderValueBox(c(), caption = "Denuncias totales")
+valueBox(nrow(cap100), caption = "Faltas totales",icon="fa-tag",col="success")
 ```
 
 
@@ -156,7 +165,7 @@ b <- reactive({as.data.frame(table(cap200[which(cap200$NOMBREDI==input$Distrito)
   geom_label(aes(label=b()$Freq),size = 3)+
   xlab("Mes") +   
   ylab("Cantidad de denuncias reportadas") + 
-  theme(legend.position = "bottom")+
+  theme(legend.position = "bottom",legend.text = element_text(size = 4))+
   scale_x_discrete(labels = c("ENE", "FEB","MAR","ABR","MAY","JUN","JUL","AGO","SET",
                               "OCT","NOV","DIC", "S/F"))
  })
