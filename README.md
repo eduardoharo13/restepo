@@ -2,7 +2,7 @@
 Repositorio que contiene bases de datos y código de programación para la realización de un dashboard en R sobre delitos y denuncias en el Perú utilizando el Registro Nacional de Denucias y Faltas (RENADEF) para el año 2017.<br />
 
 <b>Documentos:</b><br />
-<b>README.md:</b> Documento que contiene las instrucciones para el correcto despliegue del dashboard de manera local en R.
+<b>README.md:</b> Documento que contiene las instrucciones para el correcto despliegue del dashboard de manera local en R.<br />
 <b>dashboard.Rmd:</b> Documento que contiene el código de programación para crear el dashboard en R.<br />
 <b>GADM:</b> Carpeta que contiene shapefiles de Perú para la construcción del mapa que se encuentra en el dashboard.<br />
 
