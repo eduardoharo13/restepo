@@ -2,14 +2,13 @@
 title: "Registro Nacional de Denuncias de Delitos y Faltas 2017"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
+  orientation: columns
+vertical_layout: fill
 runtime: shiny
 ---
-
-
 ```{r setup, include=FALSE}
 library(foreign)
+library(shiny)
 library(curl)
 library(flexdashboard)
 library(readr)
@@ -42,7 +41,10 @@ library(rgeos)
 ```
 
 ```{r, results='hide'}
-#Cargamos la base de datos desde el repositorio
+#Ubicamos nuestro directorio de trabajo
+setwd("C:/Users/Computer/Documents/restepo")
+
+#Cargamos la base de datos
 #Módulo 100
 id<- "1lQ8L-mRVcR8nuiOwyaD25aCnod12GiB6"
 sURL <- sprintf("https://drive.google.com/uc?id=%s&export=download",id)
@@ -50,28 +52,20 @@ con <- curl(sURL)
 cap100<-read_sav(con)
 
 #Módulo 200
-cap200<-read.spss("D:/BD_varias/RENADEF 2017/200.sav",to.data.frame=T)
+cap200<-read.spss("200.sav",to.data.frame=T)
 
-#Módulo 300
-id3<-"1Xivtt_zhexJZZmel1shb1K3DgW2g7xTk"
-sURL3 <- sprintf("https://drive.google.com/uc?id=%s&export=download", id3)
-con3 <- curl(sURL3)
-cap300<-read_sav(con3)
-
-
-# Provincias:
-peru_prov<- readOGR("~/restepo/GADM/gadm36_PER_2.shp")
-# Distritos:
-peru_distr <- readOGR("~/restepo/GADM/gadm36_PER_3.shp")
+# Cargamos el mapa de Perú a nivel provincias:
+peru_prov<- readOGR("GADM/gadm36_PER_2.shp")
+#Cargamos el mapa de Perú a nivel distrital:
+peru_distr <- readOGR("GADM/gadm36_PER_3.shp")
 
 ```
 
 Dashboard
 ===================================================================
-
+  
 Column {.sidebar data-width=350}
 -----------------------------------------------------------------------
-  
 ### Número de denuncias de faltas por provincia
   
 ```{r, message = FALSE, echo = FALSE}
@@ -110,14 +104,14 @@ leaflet(peru_prov) %>%
                 bringToFront = TRUE
               )) %>%
   addLegend("bottomleft", pal = qpal, values = ~cap100$FALTAS,
-    title = "Número de denuncias",
-    labFormat =  function(type, cuts, p) {
-      n = length(cuts) 	
-      cuts[n] = "mas" 
-      for (i in 2:(n-1)){cuts[i] = ""} 	
-      cuts[1] = "menos" 
-      paste0(cuts[-n], cuts[-1])},
-    opacity = 1
+            title = "Número de denuncias",
+            labFormat =  function(type, cuts, p) {
+              n = length(cuts) 	
+              cuts[n] = "mas" 
+              for (i in 2:(n-1)){cuts[i] = ""} 	
+              cuts[1] = "menos" 
+              paste0(cuts[-n], cuts[-1])},
+            opacity = 1
   )
 
 
@@ -125,20 +119,19 @@ leaflet(peru_prov) %>%
 
 Column {data-width=300, data-height=600}
 -----------------------------------------------------------------------
-
 ### Value box 1
-
+  
 ```{r}
 
 
 renderValueBox({         
-          filtered <- 
-  cap200 %>%    
-  filter(NOMBREDD == input$Departamento,              
-
-        )          
-      valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Denuncias de delitos por departamento", icon = "fa-balance-scale", color = "navy")   
-    })
+  filtered <- 
+    cap200 %>%    
+    filter(NOMBREDD == input$Departamento,              
+           
+    )          
+  valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Denuncias de delitos por departamento", icon = "fa-balance-scale", color = "navy")   
+})
 
 
 ```
@@ -147,14 +140,14 @@ renderValueBox({
 ### Value box 2
 ```{r}
 renderValueBox({         
-          filtered <- 
-  cap200 %>%    
-  filter(            
-         NOMBREPP == input$Provincia     
-
-        )          
-      valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Denuncias de delitos por provincia", icon = "fa-balance-scale", color = "blue")   
-    })
+  filtered <- 
+    cap200 %>%    
+    filter(            
+      NOMBREPP == input$Provincia     
+      
+    )          
+  valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Denuncias de delitos por provincia", icon = "fa-balance-scale", color = "blue")   
+})
 
 
 ```
@@ -162,13 +155,13 @@ renderValueBox({
 ### Value box 3
 ```{r}
 renderValueBox({         
-          filtered <- 
-  cap200 %>%    
-  filter(     
-         NOMBREDI == input$Distrito
-        )          
-      valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Denuncias de delitos por distrito", icon ="fa-balance-scale", color = "purple")   
-    })
+  filtered <- 
+    cap200 %>%    
+    filter(     
+      NOMBREDI == input$Distrito
+    )          
+  valueBox(as.numeric(sum(table(filtered$IH208_GENERICO))), "Denuncias de delitos por distrito", icon ="fa-balance-scale", color = "purple")   
+})
 
 
 ```
@@ -201,19 +194,19 @@ Column {data-width=500}
 ```{r}
 
 b <- reactive({as.data.frame(table(cap200[which(cap200$NOMBREDI==input$Distrito),]$IH203_MES,cap200[which(cap200$NOMBREDI==input$Distrito),]$IH208_GENERICO ))})
- renderPlot({ ggplot(as.data.frame(b()), aes(x=Var1,y = Freq,group = Var2 ))+
-  geom_line(aes(color = Var2))+
-  geom_point(aes(color = Var2), size=2, shape=21, fill="white")+
-  geom_label(aes(label=b()$Freq),size = 3)+
-  xlab("Mes") +   
-  ylab("Cantidad de denuncias reportadas") + 
-  theme(legend.position = "bottom",legend.text = element_text(size = 5))+
-  scale_x_discrete(labels = c("ENE", "FEB","MAR","ABR","MAY","JUN","JUL","AGO","SET",
-                              "OCT","NOV","DIC", "S/F"))
- })
+renderPlot({ ggplot(as.data.frame(b()), aes(x=Var1,y = Freq,group = Var2 ))+
+    geom_line(aes(color = Var2))+
+    geom_point(aes(color = Var2), size=2, shape=21, fill="white")+
+    geom_label(aes(label=b()$Freq),size = 3)+
+    xlab("Mes") +   
+    ylab("Cantidad de denuncias reportadas") + 
+    theme(legend.position = "bottom",legend.text = element_text(size = 5))+
+    scale_x_discrete(labels = c("ENE", "FEB","MAR","ABR","MAY","JUN","JUL","AGO","SET",
+                                "OCT","NOV","DIC", "S/F"))
+})
 
 ```   
-  
+
 ### Tipos de denuncias de delitos  por distrito
 
 ```{r}
