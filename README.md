@@ -1,5 +1,5 @@
 # Dashboard sobre delitos y denuncias en el Perú 2017
-Repositorio que contiene bases de datos y código de programación para la realización de un dashboard en R sobre delitos y denuncias en el Perú utilizando el Registro Nacional de Denucias y Faltas (RENADEF) para el año 2017.<br />
+Repositorio que contiene bases de datos y código de programación para la realización de un dashboard en R sobre delitos y denuncias en el Perú utilizando el Registro Nacional de Denuncias y Faltas (RENADEF) para el año 2017.<br />
 
 <b>Documentos:</b><br />
 <b>README.md:</b> Documento que contiene las instrucciones para el correcto despliegue del dashboard de manera local en R.<br />
